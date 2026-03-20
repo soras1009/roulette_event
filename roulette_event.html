@@ -523,7 +523,7 @@ async function submitForm(){
     const b64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(imgFile);});
     const c=CONTENTS[selIdx];
     const payload={name,company,team,contentTitle:c.title,contentUrl:c.youtubeUrl,imageBase64:b64,submittedAt:new Date().toLocaleString('ko-KR')};
-    if(GOOGLE_SCRIPT_URL!=="여기에_구글_앱스스크립트_URL_입력"){
+    if(GOOGLE_SCRIPT_URL!=="https://script.google.com/macros/s/AKfycby-Rr2-yxtXL_KwyRfglQo-agbNc-KHjM5Wy8r_0O6qYDbE_y3py39k6aoGyqHCCcQq8Q/exec"){
       await fetch(GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     }
     renderSummary(name,company,team,c.title);
