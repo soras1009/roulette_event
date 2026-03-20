@@ -262,10 +262,10 @@ main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:44px 20p
       </div>
 
       <div class="form-card">
-        <div class="selected-chip">
+        <div class="selected-chip" id="selectedChip" onclick="if(window._selectedUrl)window.open(window._selectedUrl,'_blank')" style="cursor:pointer;" title="클릭하면 유튜브로 이동합니다">
           <div class="chip-dot"></div>
           <div class="chip-info">
-            <small>선택된 콘텐츠</small>
+            <small>선택된 콘텐츠 <span style="color:var(--blue);font-size:10px;">↗ 클릭하면 유튜브로 이동</span></small>
             <strong id="selectedContentName">-</strong>
           </div>
         </div>
@@ -479,6 +479,7 @@ function showResult(idx){
 
 function goToSubmit(){
   document.getElementById('resultOverlay').classList.remove('show');
+  window._selectedUrl = CONTENTS[selIdx].youtubeUrl;
   showPage('page-submit'); setStep(3);
 }
 
