@@ -184,7 +184,7 @@ main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:44px 20p
     삼천리그룹 사내 유튜브 이벤트
   </div>
   <h1>두근두근!<br>어떤 영상이 <em>나올까?</em></h1>
-  <p>삼천리 PR팀이 만든 유튜브 콘텐츠를 시청하고<br>구독&댓글을 남기면 추첨을 통해 기프티콘을 드립니다 🎁</p>
+  <p>삼천리 PR팀이 만든 유튜브 콘텐츠를 시청하고<br>구독 & 댓글을 남기면 추첨을 통해 기프티콘을 드립니다 🎁</p>
   <div class="hd-tag">📅 사내 임직원 대상 · 상시 진행 중</div>
 </header>
 
@@ -192,7 +192,7 @@ main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:44px 20p
 <div class="steps-bar">
   <div class="step active" id="step1"><div class="step-num">1</div><span>룰렛 돌리기</span></div>
   <div class="step-arrow"></div>
-  <div class="step" id="step2"><div class="step-num">2</div><span>유튜브 시청 & 구독& 댓글</span></div>
+  <div class="step" id="step2"><div class="step-num">2</div><span>시청 & 구독 & 댓글</span></div>
   <div class="step-arrow"></div>
   <div class="step" id="step3"><div class="step-num">3</div><span>캡처 제출</span></div>
   <div class="step-arrow"></div>
@@ -231,7 +231,7 @@ main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:44px 20p
         </div>
         <div class="info-desc">
           룰렛을 돌려서 나온 영상을 시청하고<br>
-          <strong>댓글을 작성한 화면을 캡처</strong>해서 제출하면<br>
+          채널 구독 후 <strong>댓글 작성 화면을 캡처</strong>해서 제출하면<br>
           추첨을 통해 기프티콘을 드립니다!
         </div>
       </div>
@@ -242,8 +242,8 @@ main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:44px 20p
   <div class="page" id="page-submit">
     <div class="form-layout">
       <div class="eyebrow">✍️ Step 3 · 참여 제출</div>
-      <h2 class="section-title"> 구독&댓글 캡처 제출하기</h2>
-      <p class="section-sub">삼천리 유튜브 구독&댓글을 작성하고, 그 화면을 캡처해서 아래에 제출해 주세요.<br>이름·소속과 함께 제출하면 추첨 대상이 됩니다.</p>
+      <h2 class="section-title">댓글 캡처 제출하기</h2>
+      <p class="section-sub">삼천리 유튜브 채널을 구독하고 댓글을 작성한 화면을 캡처해서 아래에 제출해 주세요.<br>이름·소속과 함께 제출하면 추첨 대상이 됩니다.</p>
 
       <div class="prize-banner">
         <div class="prize-icon">🎁</div>
@@ -256,8 +256,8 @@ main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:44px 20p
       <div class="guide-box">
         <strong>💡 참여 방법</strong><br>
         ① 룰렛으로 나온 영상을 유튜브에서 끝까지 시청<br>
-        ② 영상에 댓글 자유롭게 작성 (소감·질문 모두 OK!)<br>
-        ③ 삼천리 유튜브 채널 구독&댓글 작성 화면 캡처 (작성자 이름이 보이도록)<br>
+        ② 삼천리 유튜브 채널 구독 후 댓글 자유롭게 작성 (소감·질문 모두 OK!)<br>
+        ③ 댓글 작성 화면 캡처 (작성자 아이디가 보이도록)<br>
         ④ 아래 양식 작성 후 제출 완료!
       </div>
 
@@ -299,7 +299,7 @@ main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:44px 20p
               </div>
             </div>
           </div>
-          <div class="form-hint">※ 댓글 작성자 이름과 댓글 내용이 보이도록 캡처해주세요</div>
+          <div class="form-hint">※ 댓글 작성자 아이디와 댓글 내용이 보이도록 캡처해주세요</div>
         </div>
 
         <button class="main-btn" id="mainSubmitBtn" onclick="submitForm()">🚀 이벤트 참여 완료!</button>
@@ -327,6 +327,7 @@ main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:44px 20p
 <div class="result-overlay" id="resultOverlay">
   <div class="result-card">
     <div class="result-hd">
+      <button onclick="document.getElementById('resultOverlay').classList.remove('show');document.getElementById('spinBtn').disabled=false;document.getElementById('spinBtn').textContent='🎯 룰렛 돌리기';spinning=false;" style="position:absolute;top:12px;right:14px;background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:background .2s;z-index:10;" onmouseover="this.style.background='rgba(255,255,255,.35)'" onmouseout="this.style.background='rgba(255,255,255,.2)'">&times;</button>
       <div class="result-hd-lbl">🎯 오늘의 콘텐츠</div>
       <div class="result-hd-title" id="resultTitle"></div>
     </div>
@@ -339,7 +340,7 @@ main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:44px 20p
         <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/></svg>
         유튜브에서 영상 보러가기
       </a>
-      <button class="outline-btn" id="toSubmitBtn" onclick="goToSubmit()">✍️ 유튜브 댓글 작성 후 캡처 제출하기</button>
+      <button class="outline-btn" id="toSubmitBtn" onclick="goToSubmit()">✍️ 댓글 작성 후 캡처 제출하기</button>
     </div>
   </div>
 </div>
