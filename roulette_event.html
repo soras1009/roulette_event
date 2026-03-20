@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>삼천리 유튜브 룰렛 이벤트 🎬</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:       #0057A8;
+  --blue-mid:   #0070CC;
+  --blue-light: #3399E6;
+  --sky:        #E8F4FF;
+  --sky2:       #D0E9FF;
+  --sky3:       #B8DAFF;
+  --accent:     #00B4D8;
+  --accent2:    #0096C7;
+  --white:      #FFFFFF;
+  --off-white:  #F5F9FF;
+  --text:       #0A1628;
+  --text-mid:   #2C4A6E;
+  --text-light: #6A8BAA;
+  --border:     #C8DDEF;
+  --gold:       #FFB800;
+  --shadow-blue: rgba(0,87,168,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--off-white);color:var(--text);font-family:'Pretendard',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 10% 0%,rgba(0,87,168,.07) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 100%,rgba(0,180,216,.08) 0%,transparent 60%);pointer-events:none;z-index:0;}
+.bg-deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bg-deco::before{content:'';position:absolute;top:-60px;right:-60px;width:360px;height:360px;border-radius:50%;border:40px solid rgba(0,87,168,.05);}
+.bg-deco::after{content:'';position:absolute;bottom:-80px;left:-80px;width:440px;height:440px;border-radius:50%;border:50px solid rgba(0,180,216,.06);}
+
+/* HEADER */
+header{position:relative;z-index:2;background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 55%,var(--accent2) 100%);padding:48px 24px 56px;text-align:center;overflow:hidden;}
+header::before{content:'';position:absolute;top:-80px;left:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.06);}
+header::after{content:'';position:absolute;bottom:-100px;right:-60px;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,.04);}
+.hd-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:12px;font-weight:700;letter-spacing:1.5px;padding:6px 16px;border-radius:20px;margin-bottom:18px;text-transform:uppercase;position:relative;z-index:1;}
+header h1{font-family:'Pretendard',sans-serif;font-weight:900;font-size:clamp(32px,6vw,62px);color:#fff;line-height:1.1;letter-spacing:-1.5px;position:relative;z-index:1;}
+header h1 em{font-style:normal;color:var(--gold);position:relative;}
+header h1 em::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:4px;background:var(--gold);border-radius:2px;opacity:.5;}
+header p{color:rgba(255,255,255,.88);font-size:15px;margin-top:14px;line-height:1.85;position:relative;z-index:1;font-weight:400;}
+.hd-tag{display:inline-block;margin-top:18px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.9);font-size:13px;font-weight:600;padding:7px 18px;border-radius:30px;position:relative;z-index:1;letter-spacing:.3px;}
+
+/* STEP BAR */
+.steps-bar{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:6px;padding:18px 24px;background:#fff;border-bottom:2px solid var(--sky2);box-shadow:0 2px 12px var(--shadow-blue);}
+.step{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text-light);font-weight:500;}
+.step.active{color:var(--blue);font-weight:700;}
+.step.done{color:var(--accent2);}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--sky2);color:var(--text-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all .3s;}
+.step.active .step-num{background:var(--blue);color:#fff;box-shadow:0 2px 8px rgba(0,87,168,.35);}
+.step.done .step-num{background:var(--accent);color:#fff;}
+.step-arrow{width:20px;height:2px;background:var(--border);border-radius:1px;margin:0 2px;}
+
+/* MAIN */
+main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:44px 20px 60px;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* PAGE 1 ROULETTE */
+.roulette-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+@media(max-width:780px){.roulette-layout{grid-template-columns:1fr;}}
+.roulette-wrap{display:flex;flex-direction:column;align-items:center;}
+.roulette-outer{position:relative;width:400px;height:400px;max-width:min(88vw,400px);max-height:min(88vw,400px);}
+.roulette-outer::before{content:'';position:absolute;inset:-16px;border-radius:50%;background:conic-gradient(var(--blue) 0deg,var(--accent) 90deg,var(--blue-light) 180deg,var(--accent) 270deg,var(--blue) 360deg);animation:ring-spin 6s linear infinite;opacity:.6;}
+.roulette-outer::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:#fff;}
+@keyframes ring-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.roulette-glow{position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(circle,rgba(0,100,200,.12) 0%,transparent 70%);animation:glow-pulse 2.5s ease-in-out infinite;pointer-events:none;z-index:0;}
+@keyframes glow-pulse{0%,100%{transform:scale(1);opacity:.6;}50%{transform:scale(1.08);opacity:1;}}
+.roulette-ptr{position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:10;filter:drop-shadow(0 3px 6px rgba(0,87,168,.5));}
+#rouletteCanvas{position:relative;z-index:2;border-radius:50%;display:block;width:100%;height:100%;cursor:pointer;filter:drop-shadow(0 8px 32px rgba(0,87,168,.22));}
+.spin-btn{margin-top:28px;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:#fff;border:none;border-radius:50px;padding:18px 56px;font-family:'Pretendard',sans-serif;font-weight:800;font-size:19px;letter-spacing:.5px;cursor:pointer;transition:all .2s;box-shadow:0 6px 24px rgba(0,87,168,.38);position:relative;overflow:hidden;}
+.spin-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.15) 0%,transparent 100%);}
+.spin-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,87,168,.48);}
+.spin-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.roulette-info{display:flex;flex-direction:column;gap:20px;}
+.eyebrow{display:inline-block;background:var(--sky);border:1.5px solid var(--sky3);color:var(--blue);font-size:12px;font-weight:700;letter-spacing:1px;padding:5px 14px;border-radius:20px;text-transform:uppercase;width:fit-content;}
+.info-title{font-family:'Pretendard',sans-serif;font-weight:800;font-size:clamp(22px,3vw,30px);line-height:1.35;color:var(--text);letter-spacing:-1px;margin-top:10px;}
+.info-desc{font-size:14px;color:var(--text-mid);line-height:1.9;background:var(--sky);border-left:4px solid var(--blue);padding:14px 16px;border-radius:0 10px 10px 0;font-weight:400;}
+.content-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 20px var(--shadow-blue);}
+.content-card-hd{background:linear-gradient(90deg,var(--blue),var(--blue-mid));padding:10px 18px;color:#fff;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.content-item{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--sky2);font-size:13px;color:var(--text-mid);transition:background .15s;}
+.content-item:last-child{border-bottom:none;}
+.content-item:hover{background:var(--sky);}
+.c-num{width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.coming .c-num{background:var(--text-light);}
+.coming-badge{margin-left:auto;font-size:10px;background:rgba(0,87,168,.08);color:var(--blue);border:1px solid var(--sky3);padding:2px 8px;border-radius:10px;font-weight:700;flex-shrink:0;}
+
+/* RESULT OVERLAY */
+.result-overlay{display:none;position:fixed;inset:0;background:rgba(0,20,60,.6);z-index:200;justify-content:center;align-items:center;padding:20px;backdrop-filter:blur(10px);}
+.result-overlay.show{display:flex;animation:fade-in .3s ease;}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+.result-card{background:#fff;border-radius:24px;max-width:500px;width:100%;overflow:hidden;box-shadow:0 24px 80px rgba(0,40,120,.3);animation:pop-up .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop-up{from{transform:translateY(40px) scale(.94);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
+.result-hd{background:linear-gradient(135deg,var(--blue),var(--accent2));padding:24px 28px 20px;text-align:center;position:relative;overflow:hidden;}
+.result-hd::before{content:'🎉';position:absolute;font-size:100px;opacity:.07;top:-10px;right:-10px;}
+.result-hd-lbl{font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.75);text-transform:uppercase;margin-bottom:8px;}
+.result-hd-title{font-family:'Pretendard',sans-serif;font-weight:800;font-size:18px;color:#fff;line-height:1.45;word-break:keep-all;letter-spacing:-.5px;}
+.result-thumb{width:100%;background:var(--sky);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.result-thumb img{width:100%;height:auto;display:block;}
+.result-body{padding:22px 24px;display:flex;flex-direction:column;gap:10px;}
+.yt-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:#fff;text-decoration:none;border-radius:12px;padding:15px;font-family:'Pretendard',sans-serif;font-weight:800;font-size:16px;letter-spacing:.2px;transition:all .2s;border:none;cursor:pointer;width:100%;box-shadow:0 4px 16px rgba(0,87,168,.28);}
+.yt-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,87,168,.42);}
+.outline-btn{background:transparent;border:2px solid var(--border);color:var(--text-mid);border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;width:100%;}
+.outline-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--sky);}
+.cs-msg{background:rgba(255,184,0,.08);border:1.5px solid rgba(255,184,0,.3);border-radius:10px;padding:14px 18px;text-align:center;color:#996600;font-size:14px;line-height:1.65;display:none;}
+
+/* PAGE 2 FORM */
+.form-layout{max-width:660px;margin:0 auto;}
+.section-title{font-family:'Pretendard',sans-serif;font-weight:800;font-size:clamp(24px,4vw,34px);color:var(--text);letter-spacing:-1px;margin:10px 0;}
+.section-sub{color:var(--text-light);font-size:14px;line-height:1.8;margin-bottom:28px;}
+.prize-banner{display:flex;align-items:center;gap:16px;background:linear-gradient(90deg,rgba(255,184,0,.08),rgba(0,87,168,.05));border:1.5px solid rgba(255,184,0,.25);border-radius:14px;padding:18px 22px;margin-bottom:24px;}
+.prize-icon{font-size:36px;}
+.prize-text strong{display:block;font-size:16px;color:#996600;font-weight:700;margin-bottom:3px;}
+.prize-text span{font-size:13px;color:var(--text-light);}
+.guide-box{background:var(--sky);border:1.5px solid var(--sky3);border-radius:14px;padding:18px 20px;font-size:13px;color:var(--text-mid);line-height:1.9;margin-bottom:24px;}
+.guide-box strong{color:var(--blue);}
+.form-card{background:#fff;border:1.5px solid var(--border);border-radius:18px;padding:28px;display:flex;flex-direction:column;gap:20px;box-shadow:0 4px 24px var(--shadow-blue);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:480px){.form-row{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:7px;}
+.form-group label{font-size:13px;font-weight:700;color:var(--text);}
+.req{color:var(--blue);}
+.form-group input,.form-group textarea{background:var(--off-white);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,87,168,.1);background:#fff;}
+.form-group textarea{resize:vertical;min-height:84px;}
+.form-hint{font-size:11px;color:var(--text-light);line-height:1.5;}
+.char-counter{font-size:11px;color:var(--text-light);text-align:right;}
+.selected-chip{display:flex;align-items:center;gap:12px;background:var(--sky);border:1.5px solid var(--sky3);border-radius:12px;padding:14px 16px;}
+.chip-dot{width:10px;height:10px;border-radius:50%;background:var(--blue);flex-shrink:0;animation:blink 1.6s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.chip-info small{font-size:11px;color:var(--text-light);}
+.chip-info strong{display:block;font-size:14px;color:var(--blue);font-weight:700;margin-top:2px;}
+.upload-zone{border:2px dashed var(--border);border-radius:14px;padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:var(--off-white);}
+.upload-zone:hover{border-color:var(--blue);background:var(--sky);}
+.upload-zone.has-img{border-style:solid;border-color:var(--blue-light);padding:0;overflow:hidden;}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%!important;height:100%!important;padding:0!important;border:none!important;}
+.upload-ico{font-size:38px;margin-bottom:10px;}
+.upload-lbl strong{display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.upload-lbl span{font-size:12px;color:var(--text-light);}
+#imagePreview{width:100%;max-height:260px;object-fit:cover;display:none;border-radius:12px;}
+.upload-zone.has-img #imagePreview{display:block;}
+.upload-zone.has-img .upload-placeholder{display:none;}
+.main-btn{background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:#fff;border:none;border-radius:14px;padding:17px;font-family:'Pretendard',sans-serif;font-weight:800;font-size:17px;letter-spacing:.2px;cursor:pointer;transition:all .2s;box-shadow:0 6px 24px rgba(0,87,168,.32);width:100%;}
+.main-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 32px rgba(0,87,168,.44);}
+.main-btn:disabled{opacity:.5;cursor:not-allowed;}
+.loading-spinner{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PAGE 3 SUCCESS */
+.success-wrap{max-width:540px;margin:0 auto;text-align:center;padding:40px 0;}
+.success-emoji{font-size:88px;display:block;margin-bottom:24px;animation:pop .6s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{from{transform:scale(0) rotate(-15deg);opacity:0;}to{transform:scale(1) rotate(0);opacity:1;}}
+.success-title{font-family:'Pretendard',sans-serif;font-weight:800;font-size:clamp(28px,5vw,40px);color:var(--blue);margin-bottom:12px;letter-spacing:-1px;}
+.success-desc{color:var(--text-mid);font-size:15px;line-height:1.85;margin-bottom:32px;}
+.success-card{background:#fff;border:1.5px solid var(--border);border-radius:18px;padding:24px;text-align:left;margin-bottom:24px;box-shadow:0 4px 20px var(--shadow-blue);}
+.success-card-lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--text-light);text-transform:uppercase;margin-bottom:14px;}
+.summary-row{display:flex;gap:12px;font-size:14px;padding:7px 0;border-bottom:1px solid var(--sky2);}
+.summary-row:last-child{border:none;}
+.s-lbl{color:var(--text-light);min-width:70px;font-weight:600;}
+.s-val{color:var(--text);word-break:break-all;}
+.reset-btn{background:transparent;border:2px solid var(--border);color:var(--text-mid);border-radius:12px;padding:14px 36px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;}
+.reset-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--sky);}
+
+/* CONFETTI */
+.cfp{position:fixed;pointer-events:none;z-index:300;border-radius:2px;animation:cf-fall linear forwards;}
+@keyframes cf-fall{0%{transform:translateY(-20px) rotate(0);opacity:1;}100%{transform:translateY(105vh) rotate(600deg);opacity:0;}}
+
+/* FLOAT CIRCLES */
+.fcircle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;animation:fc-float ease-in-out infinite;}
+@keyframes fc-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-22px);}}
+</style>
+</head>
+<body>
+
+<div class="bg-deco"></div>
+<div id="fcWrap"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="hd-badge">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/></svg>
+    삼천리그룹 사내 유튜브 이벤트
+  </div>
+  <h1>두근두근!<br>어떤 영상이 <em>나올까?</em></h1>
+  <p>삼천리 PR팀이 만든 유튜브 콘텐츠를 시청하고<br>댓글을 남기면 추첨을 통해 기프티콘을 드립니다 🎁</p>
+  <div class="hd-tag">📅 사내 임직원 대상 · 상시 진행 중</div>
+</header>
+
+<!-- STEP BAR -->
+<div class="steps-bar">
+  <div class="step active" id="step1"><div class="step-num">1</div><span>룰렛 돌리기</span></div>
+  <div class="step-arrow"></div>
+  <div class="step" id="step2"><div class="step-num">2</div><span>유튜브 시청 & 댓글</span></div>
+  <div class="step-arrow"></div>
+  <div class="step" id="step3"><div class="step-num">3</div><span>캡처 제출</span></div>
+  <div class="step-arrow"></div>
+  <div class="step" id="step4"><div class="step-num">4</div><span>추첨 완료</span></div>
+</div>
+
+<main>
+
+  <!-- PAGE 1 · ROULETTE -->
+  <div class="page active" id="page-roulette">
+    <div class="roulette-layout">
+      <div class="roulette-wrap">
+        <div class="roulette-outer">
+          <div class="roulette-glow"></div>
+          <div class="roulette-ptr">
+            <svg width="34" height="44" viewBox="0 0 34 44">
+              <defs>
+                <filter id="ps"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(0,87,168,.6)"/></filter>
+                <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#0070CC"/><stop offset="100%" stop-color="#0057A8"/>
+                </linearGradient>
+              </defs>
+              <polygon points="17,44 0,0 34,0" fill="url(#pg)" filter="url(#ps)"/>
+              <polygon points="17,44 0,0 34,0" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <canvas id="rouletteCanvas" width="400" height="400"></canvas>
+        </div>
+        <button class="spin-btn" id="spinBtn" onclick="spinRoulette()">🎯 룰렛 돌리기</button>
+      </div>
+
+      <div class="roulette-info">
+        <div>
+          <div class="eyebrow">🎬 이벤트 안내</div>
+          <div class="info-title">룰렛을 돌려<br>내 영상을 뽑아봐요!</div>
+        </div>
+        <div class="info-desc">
+          룰렛을 돌려서 나온 영상을 시청하고<br>
+          <strong>댓글을 작성한 화면을 캡처</strong>해서 제출하면<br>
+          추첨을 통해 기프티콘을 드립니다!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2 · FORM -->
+  <div class="page" id="page-submit">
+    <div class="form-layout">
+      <div class="eyebrow">✍️ Step 3 · 참여 제출</div>
+      <h2 class="section-title">댓글 캡처 제출하기</h2>
+      <p class="section-sub">유튜브에 댓글을 작성하고, 그 화면을 캡처해서 아래에 제출해 주세요.<br>이름·소속과 함께 제출하면 추첨 대상이 됩니다.</p>
+
+      <div class="prize-banner">
+        <div class="prize-icon">🎁</div>
+        <div class="prize-text">
+          <strong>추첨 기프티콘 증정</strong>
+          <span>제출자 중 랜덤 추첨 후 개별 연락 드립니다</span>
+        </div>
+      </div>
+
+      <div class="guide-box">
+        <strong>💡 참여 방법</strong><br>
+        ① 룰렛으로 나온 영상을 유튜브에서 끝까지 시청<br>
+        ② 영상에 댓글 자유롭게 작성 (소감·질문 모두 OK!)<br>
+        ③ 댓글 작성 화면 캡처 (작성자 이름이 보이도록)<br>
+        ④ 아래 양식 작성 후 제출 완료!
+      </div>
+
+      <div class="form-card">
+        <div class="selected-chip">
+          <div class="chip-dot"></div>
+          <div class="chip-info">
+            <small>선택된 콘텐츠</small>
+            <strong id="selectedContentName">-</strong>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>이름 <span class="req">*</span></label>
+            <input type="text" id="inputName" placeholder="홍길동" maxlength="20">
+          </div>
+          <div class="form-group">
+            <label>소속 회사 <span class="req">*</span></label>
+            <input type="text" id="inputCompany" placeholder="(주)삼천리" maxlength="30">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>소속 팀 <span class="req">*</span></label>
+          <input type="text" id="inputTeam" placeholder="예: 마케팅팀, PR팀" maxlength="30">
+        </div>
+
+        <div class="form-group">
+          <label>댓글 화면 캡처 <span class="req">*</span></label>
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+            <img id="imagePreview" alt="미리보기">
+            <div class="upload-placeholder">
+              <div class="upload-ico">📸</div>
+              <div class="upload-lbl">
+                <strong>캡처 이미지 업로드</strong>
+                <span>클릭하거나 파일을 드래그하세요<br>JPG, PNG 지원 (최대 10MB)</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-hint">※ 댓글 작성자 이름과 댓글 내용이 보이도록 캡처해주세요</div>
+        </div>
+
+        <button class="main-btn" id="mainSubmitBtn" onclick="submitForm()">🚀 이벤트 참여 완료!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3 · SUCCESS -->
+  <div class="page" id="page-success">
+    <div class="success-wrap">
+      <span class="success-emoji">🎉</span>
+      <h2 class="success-title">제출 완료!</h2>
+      <p class="success-desc">이벤트 참여가 완료되었습니다.<br>추첨 결과는 개별 연락을 통해 안내 드립니다.<br>많은 참여 감사합니다! 💙</p>
+      <div class="success-card">
+        <div class="success-card-lbl">제출 정보 확인</div>
+        <div id="summaryContent"></div>
+      </div>
+      <button class="reset-btn" onclick="resetAll()">🔄 다른 콘텐츠 도전하기</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- RESULT OVERLAY -->
+<div class="result-overlay" id="resultOverlay">
+  <div class="result-card">
+    <div class="result-hd">
+      <div class="result-hd-lbl">🎯 오늘의 콘텐츠</div>
+      <div class="result-hd-title" id="resultTitle"></div>
+    </div>
+    <div class="result-thumb" id="resultThumb">
+      <div style="height:180px;display:flex;align-items:center;justify-content:center;font-size:48px;">▶️</div>
+    </div>
+    <div class="result-body">
+      <div class="cs-msg" id="csMsg"></div>
+      <a class="yt-btn" id="ytBtn" href="#" target="_blank">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/></svg>
+        유튜브에서 영상 보러가기
+      </a>
+      <button class="outline-btn" id="toSubmitBtn" onclick="goToSubmit()">✍️ 유튜브 댓글 작성 후 캡처 제출하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── 콘텐츠 ── */
+const CONTENTS = [
+  { title:"[일타강사 1강] 두쫀쿠, 봄동비빔밥, 그리고 다음은 무조건 이것!", youtubeUrl:"https://youtu.be/wBASloBzD9A?si=awvyeB2l3uSqEudj", thumbnail:"https://img.youtube.com/vi/wBASloBzD9A/mqdefault.jpg" },
+  { title:"이 가격에 이 성능? 도심형 전기차 BYD 돌핀!", youtubeUrl:"https://www.youtube.com/watch?v=URFNdt4a9_E", thumbnail:"https://img.youtube.com/vi/URFNdt4a9_E/mqdefault.jpg" },
+  { title:"BMW 세일즈 리딩그룹의 품격! 삼천리 모터스 천안전시장", youtubeUrl:"https://youtu.be/1m1uzyo03Uk?si=BMqAO3iK7XiopalQ", thumbnail:"https://img.youtube.com/vi/1m1uzyo03Uk/mqdefault.jpg" },
+  { title:"현대적으로 해석한 딤섬과 누들, 차이 딤섬 앤 누들바 1호점", youtubeUrl:"https://youtu.be/hEC7jhl9ffo?si=5EZsvGXKFzRqzP-D", thumbnail:"https://img.youtube.com/vi/hEC7jhl9ffo/mqdefault.jpg" },
+  { title:"삼천리그룹의 최신 소식을 만나보세요!", youtubeUrl:"https://youtu.be/hRo8BwEEawQ?si=hT59oYLTYIrkzfsu", thumbnail:"https://img.youtube.com/vi/hRo8BwEEawQ/mqdefault.jpg" },
+  { title:"[일타강사 2강] LNG, PNG, CNG, LPG?? 전부 알려줄게!", youtubeUrl:"https://www.youtube.com/watch?v=vlisQ8ZfKuA&t=1s", thumbnail:"https://img.youtube.com/vi/vlisQ8ZfKuA/mqdefault.jpg" },
+  { title:"KLPGA 2026 시즌, 삼천리 스포츠단의 올해 포부는?", youtubeUrl:"https://youtube.com/shorts/LJ8d4EGPv7Q?feature=share", thumbnail:"https://img.youtube.com/vi/LJ8d4EGPv7Q/mqdefault.jpg" },
+  { title:"주머니 속에 넣고 싶은 삼천리 키링은?", youtubeUrl:"https://youtube.com/shorts/C1py30lGZoI?feature=share", thumbnail:"https://img.youtube.com/vi/C1py30lGZoI/mqdefault.jpg" }
+];
+
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyLMBaYfO9Z2jstHnwBENiPm-JwFgn_xEJ8K47thd_8iH12AQCc_rWW4kPfrvQSeGC0pA/exec";
+
+/* ── 룰렛 색상: 삼천리 CI 블루 계열 ── */
+const COLORS = ["#0057A8","#1A6DC0","#3385CC","#4499D9","#0070CC","#0096C7","#00AEDB","#48B1E8"];
+
+const NUM = CONTENTS.length;
+const ARC = (2*Math.PI)/NUM;
+let angle = 0, spinning = false, selIdx = -1;
+
+const cv = document.getElementById('rouletteCanvas');
+const cx2 = cv.getContext('2d');
+
+function drawWheel(a) {
+  const W=cv.width, H=cv.height, cx=W/2, cy=H/2, r=cx-8;
+  cx2.clearRect(0,0,W,H);
+
+  /* 슬라이스 심볼 — 삼천리 로고에서 모티브를 딴 물방울/불꽃 형태 */
+  const SYMBOLS = ['◆','●','▲','◈','◇','○','△','◉'];
+
+  for(let i=0;i<NUM;i++){
+    const s=a+i*ARC, e=s+ARC;
+
+    /* 슬라이스 배경 */
+    cx2.beginPath(); cx2.moveTo(cx,cy); cx2.arc(cx,cy,r,s,e); cx2.closePath();
+    cx2.fillStyle=COLORS[i]; cx2.fill();
+
+    /* 구분선 */
+    cx2.strokeStyle='rgba(255,255,255,.35)'; cx2.lineWidth=2.5; cx2.stroke();
+
+    /* 심볼 — 슬라이스 중간쯤에 크게 */
+    cx2.save();
+    cx2.translate(cx,cy);
+    cx2.rotate(s+ARC/2);
+
+    /* 큰 심볼 */
+    cx2.font='bold 22px sans-serif';
+    cx2.textAlign='center';
+    cx2.textBaseline='middle';
+    cx2.fillStyle='rgba(255,255,255,0.25)';
+    cx2.shadowColor='transparent';
+    cx2.fillText(SYMBOLS[i], r*0.58, 0);
+
+    /* 삼천리 느낌 — 작은 다이아 패턴 2개 */
+    cx2.font='bold 10px sans-serif';
+    cx2.fillStyle='rgba(255,255,255,0.18)';
+    cx2.fillText('◆', r*0.82, -8);
+    cx2.fillText('◆', r*0.82,  8);
+
+    cx2.restore();
+  }
+
+  /* 중앙 원 */
+  cx2.beginPath(); cx2.arc(cx,cy,38,0,2*Math.PI);
+  const g=cx2.createRadialGradient(cx,cy,0,cx,cy,38);
+  g.addColorStop(0,'#48B1E8'); g.addColorStop(1,'#0057A8');
+  cx2.fillStyle=g; cx2.fill();
+  cx2.strokeStyle='rgba(255,255,255,.7)'; cx2.lineWidth=3; cx2.stroke();
+
+  /* 중앙 삼천리 심볼 — 불꽃 모양 SVG path 대신 텍스트로 */
+  cx2.font='bold 15px sans-serif';
+  cx2.textAlign='center';
+  cx2.textBaseline='middle';
+  cx2.shadowColor='transparent';
+  cx2.fillStyle='#fff';
+  cx2.fillText('◈', cx, cy-7);
+  cx2.font='bold 11px sans-serif';
+  cx2.fillStyle='rgba(255,255,255,.7)';
+  cx2.fillText('PLAY', cx, cy+9);
+}
+
+drawWheel(0);
+
+/* ── SPIN ── */
+function spinRoulette(){
+  if(spinning)return;
+  spinning=true;
+  const btn=document.getElementById('spinBtn');
+  btn.disabled=true; btn.textContent='🌀 돌아가는 중…';
+  const ti=Math.floor(Math.random()*NUM);
+  const extra=5+Math.random()*5;
+  const target=extra*2*Math.PI+(NUM-ti)*ARC-ARC/2-(angle%(2*Math.PI));
+  const dur=4200+Math.random()*1400;
+  const sa=angle, st=performance.now();
+  const ease=t=>1-Math.pow(1-t,4);
+  (function tick(now){
+    const p=Math.min((now-st)/dur,1);
+    angle=sa+target*ease(p);
+    drawWheel(angle);
+    if(p<1)requestAnimationFrame(tick);
+    else{spinning=false;selIdx=ti;showResult(ti);}
+  })(performance.now());
+}
+
+/* ── RESULT ── */
+function showResult(idx){
+  const c=CONTENTS[idx];
+  document.getElementById('resultTitle').textContent=c.title;
+  const th=document.getElementById('resultThumb');
+  if(c.thumbnail){
+    th.innerHTML=`<img src="${c.thumbnail}" alt="썸네일" style="width:100%;height:auto;display:block;" onerror="this.parentElement.innerHTML='<div style=\\'height:180px;display:flex;align-items:center;justify-content:center;background:var(--sky);font-size:48px;\\'>▶️</div>'">`;
+  }else{
+    th.innerHTML=`<div style="height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--sky);"><span style="font-size:40px">🔜</span><span style="font-size:13px;color:var(--text-light)">영상 준비 중입니다</span></div>`;
+  }
+  const ytBtn=document.getElementById('ytBtn');
+  const subBtn=document.getElementById('toSubmitBtn');
+  const csMsg=document.getElementById('csMsg');
+  if(c.comingSoon){
+    ytBtn.style.display='none'; subBtn.style.display='none'; csMsg.style.display='block';
+    csMsg.innerHTML='⏳ 해당 영상은 <strong>곧 업로드</strong> 예정입니다!<br><span style="font-size:12px;color:var(--text-light)">다시 룰렛을 돌려서 다른 콘텐츠에 참여해 주세요 😊</span>';
+  }else{
+    ytBtn.style.display='flex'; subBtn.style.display='block'; csMsg.style.display='none';
+    ytBtn.href=c.youtubeUrl;
+    ytBtn.onclick=e=>{e.preventDefault();window.open(c.youtubeUrl,'_blank');};
+    launchConfetti();
+  }
+  document.getElementById('selectedContentName').textContent=c.title;
+  document.getElementById('resultOverlay').classList.add('show');
+}
+
+function goToSubmit(){
+  document.getElementById('resultOverlay').classList.remove('show');
+  showPage('page-submit'); setStep(3);
+}
+
+/* ── CONFETTI ── */
+function launchConfetti(){
+  const cols=['#0057A8','#00B4D8','#3399E6','#FFB800','#FFFFFF','#0096C7','#48B1E8'];
+  for(let i=0;i<70;i++){
+    setTimeout(()=>{
+      const el=document.createElement('div');
+      el.className='cfp';
+      const sz=5+Math.random()*7;
+      el.style.cssText=`left:${Math.random()*100}vw;top:-10px;width:${sz}px;height:${sz}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${2+Math.random()*2}s;animation-delay:${Math.random()*.4}s;`;
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),4500);
+    },i*25);
+  }
+}
+
+/* ── FORM ── */
+function updateCounter(){document.getElementById('charCount').textContent=document.getElementById('inputComment').value.length;}
+
+function handleImageUpload(e){
+  const f=e.target.files[0];
+  if(!f)return;
+  if(f.size>10*1024*1024){alert('파일 크기는 10MB 이하여야 합니다.');return;}
+  const r=new FileReader();
+  r.onload=ev=>{document.getElementById('imagePreview').src=ev.target.result;document.getElementById('uploadZone').classList.add('has-img');};
+  r.readAsDataURL(f);
+}
+
+async function submitForm(){
+  const name=document.getElementById('inputName').value.trim();
+  const company=document.getElementById('inputCompany').value.trim();
+  const team=document.getElementById('inputTeam').value.trim();
+  const imgFile=document.getElementById('imageInput').files[0];
+  if(!name||!company||!team){alert('이름, 소속 회사, 소속 팀을 모두 입력해주세요.');return;}
+  if(!imgFile){alert('댓글 캡처 이미지를 업로드해주세요.');return;}
+  const btn=document.getElementById('mainSubmitBtn');
+  btn.disabled=true; btn.innerHTML='<span class="loading-spinner"></span> 제출 중…';
+  try{
+    const b64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(imgFile);});
+    const c=CONTENTS[selIdx];
+    const payload={name,company,team,contentTitle:c.title,contentUrl:c.youtubeUrl,imageBase64:b64,submittedAt:new Date().toLocaleString('ko-KR')};
+    if(GOOGLE_SCRIPT_URL!=="여기에_구글_앱스스크립트_URL_입력"){
+      await fetch(GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    }
+    renderSummary(name,company,team,c.title);
+    showPage('page-success'); setStep(4);
+  }catch(err){
+    const c=CONTENTS[selIdx];
+    renderSummary(name,company,team,c.title);    showPage('page-success'); setStep(4);
+  }finally{btn.disabled=false;btn.innerHTML='🚀 이벤트 참여 완료!';}
+}
+
+function renderSummary(name,company,team,title){
+  const rows=[['이름',name],['회사',company],['팀',team],['시청 영상',title],['제출 시각',new Date().toLocaleString('ko-KR')]];
+  document.getElementById('summaryContent').innerHTML=rows.map(([l,v])=>`<div class="summary-row"><span class="s-lbl">${l}</span><span class="s-val">${v}</span></div>`).join('');
+}
+/* ── NAV ── */
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function setStep(n){for(let i=1;i<=4;i++){const el=document.getElementById('step'+i);el.classList.remove('active','done');if(i<n)el.classList.add('done');else if(i===n)el.classList.add('active');}}
+
+function resetAll(){
+  showPage('page-roulette'); setStep(1); selIdx=-1;
+  const btn=document.getElementById('spinBtn');btn.disabled=false;btn.textContent='🎯 룰렛 돌리기';
+  ['inputName','inputCompany','inputTeam'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('imageInput').value='';
+  document.getElementById('imagePreview').src='';
+  document.getElementById('uploadZone').classList.remove('has-img');
+}
+
+/* ── 배경 떠다니는 원 ── */
+(function(){
+  const wrap=document.getElementById('fcWrap');
+  const cols=['rgba(0,87,168,0.04)','rgba(0,180,216,0.05)','rgba(51,153,230,0.04)'];
+  for(let i=0;i<8;i++){
+    const d=document.createElement('div');d.className='fcircle';
+    const sz=80+Math.random()*200;
+    d.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}vw;top:${Math.random()*100}vh;background:${cols[Math.floor(Math.random()*cols.length)]};animation-duration:${6+Math.random()*8}s;animation-delay:${Math.random()*6}s;`;
+    wrap.appendChild(d);
+  }
+})();
+</script>
+</body>
+</html>
